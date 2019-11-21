@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:descendantFocusability="blocksDescendants"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/avatar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="15dp" />
+
+    <TextView
+        android:id="@+id/nickName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="5dp"
+        android:layout_toRightOf="@id/avatar"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@android:color/holo_orange_dark"
+        android:textSize="20sp"
+        tools:text="昵称" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        tools:text="6分钟前 来自微博weibo.com"
+        android:id="@+id/from"
+        android:layout_below="@id/nickName"
+        android:layout_toRightOf="@id/avatar"
+        />
+
+    <TextView
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/avatar"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="15dp"
+        android:text="这是一条很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长的微博~~~"
+        android:textColor="@android:color/black"
+        android:textSize="20sp" />
+
+<!--    <com.example.my_weibo.myLayout.MyGridView-->
+<!--        android:id="@+id/jiugongge"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginLeft="15dp"-->
+<!--        android:layout_marginRight="15dp"-->
+<!--        android:numColumns="3"-->
+<!--        android:columnWidth="90dp"-->
+<!--        android:layout_marginBottom="15dp"-->
+<!--        android:layout_below="@id/content"-->
+<!--        android:stretchMode="columnWidth"-->
+<!--        android:gravity="center"/>-->
+
+    <com.example.my_weibo.nine_grid.NineGridTestLayout
+        android:id="@+id/jiugongge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="15dp"
+        android:layout_below="@id/content"
+        />
+
+    <LinearLayout
+        android:id="@+id/forwardLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/jiugongge"
+        android:background="#F3F3F3"
+        android:orientation="vertical"
+        android:padding="15dp">
+
+        <TextView
+            android:id="@+id/forwardContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/avatar"
+            android:minLines="0"
+            android:text="这是一条很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长的被转发的微博~~~"
+            android:textColor="#5A5A5A"
+            android:textSize="20sp" />
+
+<!--        <com.example.my_weibo.myLayout.MyGridView-->
+<!--            android:id="@+id/forwardJiugongge"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_below="@id/content"-->
+<!--            android:layout_marginTop="15dp"-->
+<!--            android:columnWidth="90dp"-->
+<!--            android:gravity="center"-->
+<!--            android:numColumns="3"-->
+<!--            android:stretchMode="columnWidth" />-->
+
+        <com.example.my_weibo.nine_grid.NineGridTestLayout
+            android:id="@+id/forwardJiugongge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_below="@id/content"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/down_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/forwardLayout"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        >
+
+        <Button
+            android:id="@+id/btnForward"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#FFFFFF"
+            android:text="转发" />
+
+        <Button
+            android:id="@+id/btnComment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#FFFFFF"
+            android:text="评论"
+            />
+
+        <Button
+            android:id="@+id/btnPraise"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#FFFFFF"
+            android:text="赞"
+            />
+
+    </LinearLayout>
+
+</RelativeLayout>
