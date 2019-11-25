@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.my_weibo.myLayout.WeiboItemView;
 import com.example.my_weibo.nine_grid.NineGridTestLayout;
 
 import java.util.ArrayList;
@@ -43,23 +44,29 @@ public class WeiboDetail extends Activity {
             }
         });
         Bundle bundle = this.getIntent().getExtras();
-        //昵称
-        TextView nickName = (TextView) findViewById(R.id.nickName);
-        nickName.setText(bundle.getString("nickName"));
-        //几分钟前和来自哪里
-        TextView from = (TextView) findViewById(R.id.from);
-        from.setText(bundle.getString("time") + bundle.getString("from"));
+//        //昵称
+//        TextView nickName = (TextView) findViewById(R.id.nickName);
+//        nickName.setText(bundle.getString("nickName"));
+//        //几分钟前和来自哪里
+//        TextView from = (TextView) findViewById(R.id.from);
+//        from.setText(bundle.getString("time") + bundle.getString("from"));
+//        //头像
+//        ImageView avatar = (ImageView) findViewById(R.id.avatar);
+//        //int resId = mContext.getResources().getIdentifier("star","drawable",mContext.getPackageName());
+//        //head.setImageResource(resId);
+//        Glide.with(this).load(bundle.getString("avatar")).into(avatar);
+        //设置昵称、几分钟前和来自哪里、头像
+        WeiboItemView weiboItemView = findViewById(R.id.avatar);
+        weiboItemView.init(bundle.getString("nickName"),
+                bundle.getString("time") + bundle.getString("from"),
+                bundle.getString("avatar"));
         //文本内容
         TextView content = (TextView) findViewById(R.id.content);
         //content.setText(bundle.getString("content"));
         //开始响应点击事件
         content.setMovementMethod(LinkMovementMethod.getInstance());
         content.setText(findOutTopic(bundle.getString("content"), bundle));
-        //头像
-        ImageView avatar = (ImageView) findViewById(R.id.avatar);
-        //int resId = mContext.getResources().getIdentifier("star","drawable",mContext.getPackageName());
-        //head.setImageResource(resId);
-        Glide.with(this).load(bundle.getString("avatar")).into(avatar);
+
         //判断正文是否有图片，若无图片则隐藏九宫格
         ArrayList<String> imageRoute = bundle.getStringArrayList("imageRoute");
         //GridView jiuGongGe = findViewById(R.id.jiugongge);

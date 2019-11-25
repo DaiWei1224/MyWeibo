@@ -47,36 +47,42 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
+<!--            <ImageView-->
+<!--                android:id="@+id/avatar"-->
+<!--                android:layout_width="50dp"-->
+<!--                android:layout_height="50dp"-->
+<!--                android:layout_alignParentLeft="true"-->
+<!--                android:layout_alignParentTop="true"-->
+<!--                android:layout_margin="15dp" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/nickName"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_alignParentTop="true"-->
+<!--                android:layout_marginTop="15dp"-->
+<!--                android:layout_marginBottom="5dp"-->
+<!--                android:layout_toRightOf="@id/avatar"-->
+<!--                android:textAppearance="?android:attr/textAppearanceLarge"-->
+<!--                android:textColor="@android:color/holo_orange_dark"-->
+<!--                android:textSize="20sp"-->
+<!--                tools:text="昵称" />-->
+
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:textAppearance="?android:attr/textAppearanceSmall"-->
+<!--                tools:text="6分钟前 来自微博weibo.com"-->
+<!--                android:id="@+id/from"-->
+<!--                android:layout_below="@id/nickName"-->
+<!--                android:layout_toRightOf="@id/avatar"-->
+<!--                />-->
+
+            <com.example.my_weibo.myLayout.WeiboItemView
                 android:id="@+id/avatar"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:layout_margin="15dp" />
-
-            <TextView
-                android:id="@+id/nickName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="5dp"
-                android:layout_toRightOf="@id/avatar"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="@android:color/holo_orange_dark"
-                android:textSize="20sp"
-                tools:text="昵称" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                tools:text="6分钟前 来自微博weibo.com"
-                android:id="@+id/from"
-                android:layout_below="@id/nickName"
-                android:layout_toRightOf="@id/avatar"
-                />
+                android:layout_margin="15dp"/>
 
             <TextView
                 android:id="@+id/content"
