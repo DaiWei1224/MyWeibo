@@ -9,20 +9,16 @@ import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
-import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.my_weibo.myLayout.WeiboItemView;
@@ -35,14 +31,17 @@ import java.util.List;
 import androidx.annotation.NonNull;
 
 public class MyDataAdapter extends BaseAdapter{
-    //Context context = null;
-    //MyDataClass[] data = null;
     private Context mContext = null;
     private List<BaseDataClass> mData = null;
 
     public MyDataAdapter(Context context, List<BaseDataClass> data){
         this.mContext = context;
         this.mData = data;
+    }
+
+    @Override
+    public int getViewTypeCount(){
+        return ViewTypeHelper.VIEW_TYPE_COUNT;
     }
 
     @Override
@@ -70,24 +69,30 @@ public class MyDataAdapter extends BaseAdapter{
         }
         return -1;
     }
+
     @Override
     public View getView(int position, final View convertView, ViewGroup parent) {
         View rootView = null;
         BaseDataClass obj = mData.get(position);
+        ViewHolder viewHolder;
         try {
-            //方法一：因为顶部栏与微博的布局不同，下拉时顶部栏被复用会导致程序崩溃
-//            if(convertView == null) {
-//                LayoutInflater inflater = LayoutInflater.from(mContext);
-//                rootView = inflater.inflate(ViewTypeHelper.getViewTemplate(obj), parent, false);
-//            }else{
-//                rootView = convertView;
-//            }
-            //方法二：由于没有复用视图，每次都新建视图，所以不能保存顶部栏横滑的状态……
-            LayoutInflater inflater = LayoutInflater.from(mContext);
-            rootView = inflater.inflate(ViewTypeHelper.getViewTemplate(obj), parent, false);
-
+            if(convertView == null) {
+                LayoutInflater inflater = LayoutInflater.from(mContext);
+                rootView = inflater.inflate(ViewTypeHelper.getViewTemplate(obj), parent, false);
+                viewHolder = new ViewHolder();
+                viewHolder.avatar = rootView.findViewById(R.id.avatar);
+                viewHolder.content =  rootView.findViewById(R.id.content);
+                viewHolder.jiugongge = rootView.findViewById(R.id.jiugongge);
+                viewHolder.forwardContent = rootView.findViewById(R.id.forwardContent);
+                viewHolder.forwardJiugongge = rootView.findViewById(R.id.forwardJiugongge);
+                viewHolder.forwardLayout = rootView.findViewById(R.id.forwardLayout);
+                rootView.setTag(viewHolder);
+            }else{
+                rootView = convertView;
+                viewHolder = (ViewHolder)rootView.getTag();
+            }
             if(ViewTypeHelper.getViewType(obj) == ViewTypeHelper.VIEW_TYPE_ITEM){
-                processStreamObject((MyDataClass)obj, rootView);
+                processStreamObject((MyDataClass)obj, rootView, viewHolder);
             }else if(ViewTypeHelper.getViewType(obj) == ViewTypeHelper.VIEW_TYPE_TOP){
                 processTopObject((MyTopDataClass)obj, rootView);
             }
@@ -116,67 +121,37 @@ public class MyDataAdapter extends BaseAdapter{
     }
 
     //处理流数据
-    private void processStreamObject(final MyDataClass obj, View rootView) {
-//        //头像
-//        ImageView avatar = (ImageView) rootView.findViewById(R.id.avatar);
-//        //int resId = mContext.getResources().getIdentifier("star","drawable",mContext.getPackageName());
-//        //head.setImageResource(resId);
-//        Glide.with(mContext).load(obj.getAvatar()).into(avatar);
-//        //昵称
-//        TextView nickName = (TextView) rootView.findViewById(R.id.nickName);
-//        nickName.setText(obj.getNickName());
-//        //几分钟前和来自哪里
-//        TextView from = (TextView) rootView.findViewById(R.id.from);
-//        from.setText(obj.getTime() + obj.getFrom());
-
+    private void processStreamObject(final MyDataClass obj, View rootView, ViewHolder viewHolder) {
         //设置昵称、几分钟前和来自哪里、头像
-        WeiboItemView weiboItemView = rootView.findViewById(R.id.avatar);
-        weiboItemView.init(obj.getNickName(), obj.getTime()+obj.getFrom(),obj.getAvatar());
+        viewHolder.avatar.init(obj.getNickName(), obj.getTime()+obj.getFrom(),obj.getAvatar());
         //文本内容
-        TextView content = (TextView) rootView.findViewById(R.id.content);
-        //开始响应点击事件
-        //content.setMovementMethod(LinkMovementMethod.getInstance());
-        content.setOnTouchListener(new TextViewListener());
-        //content.setText(obj.getContent());
-        content.setText(findOutTopic(obj.getContent(), obj.getTopicURL()));
+        viewHolder.content.setOnTouchListener(new TextViewListener());
+        viewHolder.content.setText(findOutTopic(obj.getContent(), obj.getTopicURL()));
         //判断正文是否有图片，若无图片则隐藏九宫格
         ArrayList<String> imageRoute = obj.getImageRoute();
-        //GridView jiuGongGe = rootView.findViewById(R.id.jiugongge);
-        NineGridTestLayout jiuGongGe = (NineGridTestLayout)rootView.findViewById(R.id.jiugongge);
         if(imageRoute == null){
-            jiuGongGe.setVisibility(View.GONE);
+            viewHolder.jiugongge.setVisibility(View.GONE);
         }else{
-            jiuGongGe.setUrlList(imageRoute);
-            //ImageAdapter imageAdapter = new ImageAdapter(mContext, imageRoute);
-            //jiuGongGe.setAdapter(imageAdapter);
+            viewHolder.jiugongge.setUrlList(imageRoute);
         }
         //判断是否转发，若无转发则隐藏转发视图
-        LinearLayout forwardLayout = (LinearLayout)rootView.findViewById(R.id.forwardLayout);
         String forward_content = obj.getForwardContent();
         if(forward_content == null){
-            forwardLayout.setVisibility(View.GONE);
+            viewHolder.forwardLayout.setVisibility(View.GONE);
         }else{
-            TextView forwardContent = (TextView)rootView.findViewById(R.id.forwardContent);
-            //forwardContent.setText("@" + obj.getForwardNickName() + ":" + forward_content);
-            forwardContent.setText(
+            viewHolder.forwardContent.setText(
                     findOutTopic("@" + obj.getForwardNickName() + ":" + forward_content,
                             obj.getTopicURL()));
             //开始响应点击事件
-            //forwardContent.setMovementMethod(LinkMovementMethod.getInstance());
-            forwardContent.setOnTouchListener(new TextViewListener());
+            viewHolder.forwardContent.setOnTouchListener(new TextViewListener());
             //判断转发的微博是否有图片，没有则将九宫格隐藏
             ArrayList<String> forwardImageRoute = obj.getForwardImageRoute();
-            //GridView forwardJiugongge = rootView.findViewById(R.id.forwardJiugongge);
-            NineGridTestLayout forwardJiugongge = (NineGridTestLayout)rootView.findViewById(R.id.forwardJiugongge);
             if(forwardImageRoute == null){
-                forwardJiugongge.setVisibility(View.GONE);
+                viewHolder.forwardJiugongge.setVisibility(View.GONE);
             }else{
-                forwardJiugongge.setUrlList(forwardImageRoute);
-                //ImageAdapter forwardImageAdapter = new ImageAdapter(mContext, forwardImageRoute);
-                //forwardJiugongge.setAdapter(forwardImageAdapter);
+                viewHolder.forwardJiugongge.setUrlList(forwardImageRoute);
             }
         }
-
     }
 
     //找出文本中的话题部分（以#开始#结束），设置字体为蓝色且可点击
@@ -253,68 +228,13 @@ public class MyDataAdapter extends BaseAdapter{
         }
     }
 
-//    //处理流数
-//    private void processStreamObject(final MyDataClass obj, View rootView, int position) {
-//        TextView titleTextView = (TextView)rootView.findViewById(R.id.tvTitle);
-//        titleTextView.setText(((MyDataClass) obj).getItemTitle());
-//        TextView detailTextView = (TextView)rootView.findViewById(R.id.tvDetail);
-//        detailTextView.setText(((MyDataClass) obj).getItemDetaile());
-//        ImageView imageView = (ImageView)rootView.findViewById(R.id.imgIcon);
-//        int resId = mContext.getResources().getIdentifier(obj.getImageName(),"drawable",mContext.getPackageName());
-//        imageView.setImageResource(resId);
-//        imageView.setTag(position);
-//        imageView.setOnClickListener(new View.OnClickListener(){
-//            @Override
-//            public void onClick(View v){
-//                MyDataClass obj = (MyDataClass)mData.get((int)(v.getTag()));
-//                Toast.makeText(mContext, obj.getImageName() + ".png", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
-
-//    @Override
-//    public View getView(int position, final View convertView, ViewGroup parent) {
-//        View row = convertView;
-//        ViewHolder holder = null;
-//        if(row == null){
-//            //如果View控件还没有创建，则实例化它
-//            LayoutInflater inflater = LayoutInflater.from(context);
-//            row = inflater.inflate(R.layout.listview_item, parent, false);
-//            //创建ViewHolder对象
-//            holder = new ViewHolder();
-//            //使用ViewHolder对象保存各个控件引用
-//            holder.imageView = (ImageView)row.findViewById(R.id.imgIcon);
-//            holder.titleView = (TextView)row.findViewById(R.id.tvTitle);
-//            holder.detailView = (TextView)row.findViewById(R.id.tvDetail);
-//            //以下代码展示了行中的单个控件，如何存取本行对应的数据源对象的方法
-//            holder.imageView.setTag(position);
-//            holder.imageView.setOnClickListener(new View.OnClickListener(){
-//                @Override
-//                public void onClick(View v){
-//                    MyDataClass obj = data[(int)(v.getTag())];
-//                    Toast.makeText(context, obj.getImageName() + ".png", Toast.LENGTH_SHORT).show();
-//                }
-//            });
-//            //使用顶层控件容器的Tag属性保存ViewHolder对象
-//            row.setTag(holder);
-//        }else{
-//            holder = (ViewHolder)row.getTag();
-//        }
-//        //从数据源中提取数据并显示
-//        MyDataClass dataObj = data[position];
-//
-//        holder.titleView.setText(dataObj.getItemTitle());
-//        holder.detailView.setText(dataObj.getItemDetaile());
-//
-//        int resId = context.getResources().getIdentifier(dataObj.getImageName(),"drawable",context.getPackageName());
-//        holder.imageView.setImageResource(resId);
-//
-//        return row;
-//    }
-//    //ViewHolder内部类，它的实例用于缓存View控件
-//    private static class ViewHolder{
-//        ImageView imageView;
-//        TextView titleView;
-//        TextView detailView;
-//    }
+    //ViewHolder内部类，它的实例用于缓存View控件
+    private static class ViewHolder{
+        WeiboItemView avatar;
+        TextView content;
+        NineGridTestLayout jiugongge;
+        LinearLayout forwardLayout;
+        TextView forwardContent;
+        NineGridTestLayout forwardJiugongge;
+    }
 }
